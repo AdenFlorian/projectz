@@ -1,11 +1,9 @@
 <?php
 require 'config.php';
+require 'projectcreator.php';
 
 // Get project name from user
 $name = readLine('Enter new project name: ');
-
-// Capitalize first letter
-//$name = ucfirst($name);
 
 echo "\r\nProject types:\r\n";
 
