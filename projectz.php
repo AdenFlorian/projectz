@@ -5,7 +5,7 @@ require 'config.php';
 $name = readLine('Enter new project name: ');
 
 // Capitalize first letter
-$name = ucfirst($name);
+//$name = ucfirst($name);
 
 echo "\r\nProject types:\r\n";
 
@@ -31,4 +31,4 @@ switch ($type) {
 		break;
 }
 
-echo 'Done!';
+echo "Done!\n";

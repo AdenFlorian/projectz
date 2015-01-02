@@ -9,6 +9,7 @@ define('XAMPP', "D:\\xampp");
 define('HTDOCS', XAMPP . DS . "htdocs");
 define('HTTPDVHOSTS', XAMPP . DS . "apache\\conf\\extra\\httpd-vhosts.conf");
 define('HOSTS', "C:\\Windows\\System32\\drivers\\etc\\hosts");
+define('PROJECTS', "C:\\googledrive\\projects");
 // Zip files
 define('UNITY_BUILDS_ZIP', DATA . DS . "BuildsFolders.zip");
 define('UNITY_INNER_ZIP', DATA . DS . "InnerUnityFolders.zip");
@@ -44,24 +45,39 @@ function unzip($inputZip, $outputFolder)
 
 function unityproject($name)
 {
-	$projectPath = WORK . DS . $name;
-	$unityPath = $projectPath . DS . "$name Unity Project";
+	$projectPath = PROJECTS . DS . $name;
+	//$unityPath = $projectPath . DS . "$name Unity Project";
 	//$buildsPath = $projectPath . DS . 'Builds';
 
 	// Make main project folder
 	mkdir($projectPath);
 
 	// Create Unity project folder
-	mkdir($unityPath);
+	//mkdir($unityPath);
 
 	// Extract Builds folder stuff
 	unzip(UNITY_BUILDS_ZIP, $projectPath);
 
-	// Extract Inner Unity Folder stuff
-	unzip(UNITY_INNER_ZIP, $unityPath);
+	// Extract Unity Folder stuff
+	unzip(UNITY_INNER_ZIP, $projectPath);
 
 	// Edit readme.md
-	editReadme($name, $unityPath);
+	editReadme($name, $projectPath);
+
+	// Change company folder is assets folder to game name
+	renameCompanyFolder($projectPath . DS . 'Assets' . DS . $name, $projectPath . DS . 'Assets' . DS . 'Company_Name');
+	
+	chdir($projectPath);
+	
+	// git init
+	exec('git init');
+	$buildscriptsDirName = '_buildscripts';
+	
+	exec('git clone --depth=1 https://github.com/AdenFlorian/unity_build_scripts.git ' . $buildscriptsDirName);
+	
+	echo 'Removing .git dir...';
+	
+	exec('rmdir /S /Q ' . $buildscriptsDirName . DS . '.git');
 }
 
 function webproject($name, $domain)
@@ -123,4 +139,9 @@ function editReadme($name, $readmeFolder)
 	$str = file_get_contents(DATA . DS . 'README.md');
 	$str = str_replace("_Project_", "_" . $name . "_", $str);
 	file_put_contents($readmeFolder . DS . 'README.md', $str);
+}
+
+function renameCompanyFolder($newName, $folder)
+{
+	rename($folder, $newName);
 }
