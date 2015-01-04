@@ -1,0 +1,6 @@
+*.sublime*
+
+# Other
+.DS_Store
+Thumbs.db
+
